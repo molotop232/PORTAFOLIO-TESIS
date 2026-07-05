@@ -23,9 +23,6 @@ export default function App() {
       {/* Header */}
       <header className="absolute top-0 left-0 w-full p-4 md:p-6 z-20 flex flex-col md:flex-row justify-between items-center md:items-start gap-2 pointer-events-none">
         <h1 className="font-serif text-lg md:text-xl tracking-widest text-zinc-800 uppercase pointer-events-auto mt-2 md:mt-0">PORTAFOLIO</h1>
-        <div className="md:hidden pointer-events-auto bg-white/70 backdrop-blur px-3 py-1.5 rounded-full border border-zinc-200 shadow-sm">
-          <span className="text-[9px] font-sans tracking-widest uppercase text-zinc-600">Gira tu dispositivo ↻</span>
-        </div>
       </header>
 
       {/* Main Content with Zoom */}
