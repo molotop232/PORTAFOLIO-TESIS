@@ -55,18 +55,18 @@ export default function Flipbook({ pages, aspectRatio }: FlipbookProps) {
   }
 
   return (
-    <div className="relative w-full flex flex-col items-center justify-center overflow-hidden py-4 md:py-6">
+    <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden py-4 md:py-6">
       {/* Navigation Controls */}
-      <div className="flex items-center justify-center gap-6 mb-4 md:mb-6 text-zinc-500 z-10">
+      <div className="flex items-center justify-center gap-4 md:gap-6 mb-6 md:mb-8 text-zinc-600 z-10 mt-16 md:mt-0">
         <button 
           onClick={prev} 
           disabled={currentSheet === 0} 
-          className="p-3 rounded-full hover:bg-zinc-200/50 disabled:opacity-30 transition-colors bg-white/40 shadow-sm backdrop-blur-sm"
+          className="p-3 md:p-4 rounded-full hover:bg-zinc-200/50 disabled:opacity-30 transition-all bg-white/80 shadow-sm backdrop-blur-sm active:scale-95 border border-zinc-200"
           aria-label="Página anterior"
         >
-          <ChevronLeft size={20} />
+          <ChevronLeft size={24} className="md:w-5 md:h-5" />
         </button>
-        <span className="font-sans text-[10px] md:text-xs tracking-widest uppercase bg-white/60 px-4 py-2 rounded-full shadow-sm backdrop-blur-sm">
+        <span className="font-sans text-[10px] md:text-xs tracking-widest uppercase bg-white/60 px-4 py-2 rounded-full shadow-sm backdrop-blur-sm text-center min-w-[100px]">
           {currentSheet === 0 
             ? "Portada" 
             : currentSheet === totalSheets 
@@ -76,16 +76,16 @@ export default function Flipbook({ pages, aspectRatio }: FlipbookProps) {
         <button 
           onClick={next} 
           disabled={currentSheet === totalSheets} 
-          className="p-3 rounded-full hover:bg-zinc-200/50 disabled:opacity-30 transition-colors bg-white/40 shadow-sm backdrop-blur-sm"
+          className="p-3 md:p-4 rounded-full hover:bg-zinc-200/50 disabled:opacity-30 transition-all bg-white/80 shadow-sm backdrop-blur-sm active:scale-95 border border-zinc-200"
           aria-label="Siguiente página"
         >
-          <ChevronRight size={20} />
+          <ChevronRight size={24} className="md:w-5 md:h-5" />
         </button>
       </div>
 
       {/* 3D Book Container */}
       <div 
-        className="w-full max-w-[95vw] lg:max-w-[90vw] 2xl:max-w-[85vw] px-2 md:px-8"
+        className="w-full max-w-[100vw] sm:max-w-[95vw] lg:max-w-[90vw] 2xl:max-w-[85vw] px-1 sm:px-2 md:px-8 flex-1 flex items-center"
         style={{ perspective: '4000px', WebkitPerspective: '4000px' }}
       >
         <div 
@@ -171,7 +171,7 @@ export default function Flipbook({ pages, aspectRatio }: FlipbookProps) {
         </div>
       </div>
       
-      <p className="mt-12 text-[10px] md:text-xs font-sans text-zinc-400 tracking-widest uppercase">
+      <p className="mt-8 md:mt-12 mb-24 md:mb-0 text-[9px] md:text-xs font-sans text-zinc-500 tracking-widest uppercase text-center px-4 bg-white/40 md:bg-transparent py-1.5 rounded-full backdrop-blur-sm md:backdrop-blur-none">
         Haz doble clic en las hojas para interactuar
       </p>
     </div>

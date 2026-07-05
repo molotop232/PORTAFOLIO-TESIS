@@ -21,8 +21,11 @@ export default function App() {
       ></div>
 
       {/* Header */}
-      <header className="absolute top-0 left-0 w-full p-6 z-20 flex justify-between items-center pointer-events-none">
-        <h1 className="font-serif text-xl tracking-widest text-zinc-800 uppercase pointer-events-auto">PORTAFOLIO</h1>
+      <header className="absolute top-0 left-0 w-full p-4 md:p-6 z-20 flex flex-col md:flex-row justify-between items-center md:items-start gap-2 pointer-events-none">
+        <h1 className="font-serif text-lg md:text-xl tracking-widest text-zinc-800 uppercase pointer-events-auto mt-2 md:mt-0">PORTAFOLIO</h1>
+        <div className="md:hidden pointer-events-auto bg-white/70 backdrop-blur px-3 py-1.5 rounded-full border border-zinc-200 shadow-sm">
+          <span className="text-[9px] font-sans tracking-widest uppercase text-zinc-600">Gira tu dispositivo ↻</span>
+        </div>
       </header>
 
       {/* Main Content with Zoom */}
@@ -38,27 +41,27 @@ export default function App() {
           {({ zoomIn, zoomOut, resetTransform }) => (
             <>
               {/* Zoom Controls */}
-              <div className="absolute bottom-6 md:bottom-12 right-6 md:right-12 z-50 flex items-center gap-2 bg-white/60 p-2 rounded-full shadow-lg backdrop-blur-md border border-white/50">
+              <div className="absolute bottom-6 md:bottom-12 right-1/2 translate-x-1/2 md:translate-x-0 md:right-12 z-50 flex items-center gap-2 bg-white/80 md:bg-white/60 p-2 rounded-full shadow-lg backdrop-blur-md border border-white/50">
                 <button 
                   onClick={() => zoomOut()} 
-                  className="p-2 hover:bg-white rounded-full transition-colors"
+                  className="p-2 md:p-3 hover:bg-white rounded-full transition-colors active:scale-95"
                   aria-label="Alejar"
                 >
-                  <ZoomOut size={18} className="text-zinc-600" />
+                  <ZoomOut size={20} className="text-zinc-700" />
                 </button>
                 <button 
                   onClick={() => resetTransform()} 
-                  className="p-2 hover:bg-white rounded-full transition-colors"
+                  className="p-2 md:p-3 hover:bg-white rounded-full transition-colors active:scale-95"
                   aria-label="Ajustar"
                 >
-                  <Maximize size={18} className="text-zinc-600" />
+                  <Maximize size={20} className="text-zinc-700" />
                 </button>
                 <button 
                   onClick={() => zoomIn()} 
-                  className="p-2 hover:bg-white rounded-full transition-colors"
+                  className="p-2 md:p-3 hover:bg-white rounded-full transition-colors active:scale-95"
                   aria-label="Acercar"
                 >
-                  <ZoomIn size={18} className="text-zinc-600" />
+                  <ZoomIn size={20} className="text-zinc-700" />
                 </button>
               </div>
 
