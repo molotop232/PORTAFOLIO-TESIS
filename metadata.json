@@ -1,0 +1,6 @@
+{
+  "name": "Dossier Arquitectónico",
+  "description": "Un dossier tipo revista interactiva con efecto de paso de hoja en 3D.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

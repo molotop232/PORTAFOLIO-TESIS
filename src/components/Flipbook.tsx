@@ -1,0 +1,179 @@
+import React, { useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+interface FlipbookProps {
+  pages: React.ReactNode[];
+  aspectRatio?: number | null;
+}
+
+export default function Flipbook({ pages, aspectRatio }: FlipbookProps) {
+  const [currentSheet, setCurrentSheet] = useState(0);
+  const [flipping, setFlipping] = useState<number | null>(null);
+  
+  // A book has sheets. Each sheet has a front and back page.
+  // We need an even number of pages to form complete sheets.
+  const paddedPages = [...pages];
+  if (paddedPages.length % 2 !== 0) {
+    paddedPages.push(<div className="w-full h-full bg-white"></div>);
+  }
+  
+  const totalSheets = paddedPages.length / 2;
+
+  const next = () => {
+    if (currentSheet < totalSheets) {
+      setFlipping(currentSheet);
+      setCurrentSheet((prev) => prev + 1);
+      setTimeout(() => setFlipping(null), 1000);
+    }
+  };
+
+  const prev = () => {
+    if (currentSheet > 0) {
+      setFlipping(currentSheet - 1);
+      setCurrentSheet((prev) => prev - 1);
+      setTimeout(() => setFlipping(null), 1000);
+    }
+  };
+
+  // Determine container translation to keep the visible part of the book centered
+  let translateX = "translate-x-0";
+  if (currentSheet === 0) {
+    // Cover only: move container left by 25% so the right half (cover) is centered
+    translateX = "-translate-x-1/4";
+  } else if (currentSheet === totalSheets) {
+    // Back cover only: move container right by 25% so the left half is centered
+    translateX = "translate-x-1/4";
+  }
+
+  // Construct sheets
+  const sheets = [];
+  for (let i = 0; i < totalSheets; i++) {
+    sheets.push({
+      front: paddedPages[i * 2],
+      back: paddedPages[i * 2 + 1],
+    });
+  }
+
+  return (
+    <div className="relative w-full flex flex-col items-center justify-center overflow-hidden py-4 md:py-6">
+      {/* Navigation Controls */}
+      <div className="flex items-center justify-center gap-6 mb-4 md:mb-6 text-zinc-500 z-10">
+        <button 
+          onClick={prev} 
+          disabled={currentSheet === 0} 
+          className="p-3 rounded-full hover:bg-zinc-200/50 disabled:opacity-30 transition-colors bg-white/40 shadow-sm backdrop-blur-sm"
+          aria-label="Página anterior"
+        >
+          <ChevronLeft size={20} />
+        </button>
+        <span className="font-sans text-[10px] md:text-xs tracking-widest uppercase bg-white/60 px-4 py-2 rounded-full shadow-sm backdrop-blur-sm">
+          {currentSheet === 0 
+            ? "Portada" 
+            : currentSheet === totalSheets 
+              ? "Contraportada" 
+              : `Pág ${currentSheet * 2 - 1} - ${currentSheet * 2}`}
+        </span>
+        <button 
+          onClick={next} 
+          disabled={currentSheet === totalSheets} 
+          className="p-3 rounded-full hover:bg-zinc-200/50 disabled:opacity-30 transition-colors bg-white/40 shadow-sm backdrop-blur-sm"
+          aria-label="Siguiente página"
+        >
+          <ChevronRight size={20} />
+        </button>
+      </div>
+
+      {/* 3D Book Container */}
+      <div 
+        className="w-full max-w-[95vw] lg:max-w-[90vw] 2xl:max-w-[85vw] px-2 md:px-8"
+        style={{ perspective: '4000px', WebkitPerspective: '4000px' }}
+      >
+        <div 
+          className={`relative w-full transition-transform duration-1000 ease-[cubic-bezier(0.645,0.045,0.355,1)] ${translateX} ${!aspectRatio ? 'aspect-[1682/594]' : ''}`}
+          style={aspectRatio ? { aspectRatio: `${aspectRatio}` } : undefined}
+        >
+          {sheets.map((sheet, index) => {
+            const isFlipped = index < currentSheet;
+            
+            return (
+              <div
+                key={index}
+                className="absolute top-0 left-1/2 w-1/2 h-full origin-left transition-transform duration-1000 ease-[cubic-bezier(0.645,0.045,0.355,1)]"
+                style={{
+                  transformStyle: 'preserve-3d',
+                  WebkitTransformStyle: 'preserve-3d',
+                  transform: isFlipped ? 'rotateY(-180deg)' : 'rotateY(0deg)',
+                  zIndex: flipping === index ? 50 : (isFlipped ? index + 1 : totalSheets - index),
+                }}
+              >
+                {/* Front Face (Right side when closed) */}
+                <div 
+                  className="absolute inset-0 bg-white overflow-hidden shadow-[-1px_0_15px_rgba(0,0,0,0.1)] border-l border-black/5 group cursor-pointer"
+                  style={{ 
+                    backfaceVisibility: 'hidden', 
+                    WebkitBackfaceVisibility: 'hidden',
+                    transform: 'rotateY(0deg)'
+                  }}
+                  onDoubleClick={next}
+                >
+                  {sheet.front}
+                  {/* Subtle spine shadow gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/15 via-transparent to-transparent w-16 left-0 pointer-events-none"></div>
+                  
+                  {/* Dynamic fold shadow/highlight during flip */}
+                  <div 
+                    className="absolute inset-0 pointer-events-none z-20"
+                    style={{
+                      background: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.02) 35%, rgba(0,0,0,0.12) 45%, rgba(255,255,255,0.7) 50%, rgba(0,0,0,0.12) 55%, rgba(0,0,0,0.02) 65%, rgba(0,0,0,0) 100%)',
+                      backgroundSize: '300% 100%',
+                      backgroundPosition: isFlipped ? '100% 0' : '0% 0',
+                      transition: 'background-position 1s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.3s ease-in-out',
+                      opacity: flipping === index ? 1 : 0,
+                    }}
+                  ></div>
+
+                  {/* Hover interaction hint */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none"></div>
+                </div>
+                
+                {/* Back Face (Left side when open) */}
+                <div 
+                  className="absolute inset-0 bg-zinc-50 overflow-hidden shadow-[1px_0_15px_rgba(0,0,0,0.1)] border-r border-black/5 group cursor-pointer"
+                  style={{ 
+                    backfaceVisibility: 'hidden', 
+                    WebkitBackfaceVisibility: 'hidden',
+                    transform: 'rotateY(180deg)' 
+                  }}
+                  onDoubleClick={prev}
+                >
+                  {sheet.back}
+                  {/* Subtle spine shadow gradient (on the right because it's flipped) */}
+                  <div className="absolute inset-0 bg-gradient-to-l from-black/15 via-transparent to-transparent w-16 right-0 left-auto pointer-events-none"></div>
+
+                  {/* Dynamic fold shadow/highlight during flip */}
+                  <div 
+                    className="absolute inset-0 pointer-events-none z-20"
+                    style={{
+                      background: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.02) 35%, rgba(0,0,0,0.12) 45%, rgba(255,255,255,0.7) 50%, rgba(0,0,0,0.12) 55%, rgba(0,0,0,0.02) 65%, rgba(0,0,0,0) 100%)',
+                      backgroundSize: '300% 100%',
+                      backgroundPosition: isFlipped ? '100% 0' : '0% 0',
+                      transition: 'background-position 1s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.3s ease-in-out',
+                      opacity: flipping === index ? 1 : 0,
+                    }}
+                  ></div>
+
+                  {/* Hover interaction hint */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none"></div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      
+      <p className="mt-12 text-[10px] md:text-xs font-sans text-zinc-400 tracking-widest uppercase">
+        Haz doble clic en las hojas para interactuar
+      </p>
+    </div>
+  );
+}
