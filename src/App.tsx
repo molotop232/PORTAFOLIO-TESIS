@@ -38,27 +38,27 @@ export default function App() {
           {({ zoomIn, zoomOut, resetTransform }) => (
             <>
               {/* Zoom Controls */}
-              <div className="absolute bottom-6 md:bottom-12 right-1/2 translate-x-1/2 md:translate-x-0 md:right-12 z-50 flex items-center gap-2 bg-white/80 md:bg-white/60 p-2 rounded-full shadow-lg backdrop-blur-md border border-white/50">
+              <div className="fixed bottom-6 right-4 md:bottom-12 md:right-12 z-50 flex flex-col md:flex-row items-center gap-1 md:gap-2 bg-white/80 md:bg-white/60 p-1.5 md:p-2 rounded-full shadow-lg backdrop-blur-md border border-white/50 pointer-events-auto">
                 <button 
-                  onClick={() => zoomOut()} 
-                  className="p-2 md:p-3 hover:bg-white rounded-full transition-colors active:scale-95"
-                  aria-label="Alejar"
+                  onClick={() => zoomIn()} 
+                  className="p-1.5 md:p-3 hover:bg-white rounded-full transition-colors active:scale-95"
+                  aria-label="Acercar"
                 >
-                  <ZoomOut size={20} className="text-zinc-700" />
+                  <ZoomIn className="w-4 h-4 md:w-5 md:h-5 text-zinc-700" />
                 </button>
                 <button 
                   onClick={() => resetTransform()} 
-                  className="p-2 md:p-3 hover:bg-white rounded-full transition-colors active:scale-95"
+                  className="p-1.5 md:p-3 hover:bg-white rounded-full transition-colors active:scale-95"
                   aria-label="Ajustar"
                 >
-                  <Maximize size={20} className="text-zinc-700" />
+                  <Maximize className="w-4 h-4 md:w-5 md:h-5 text-zinc-700" />
                 </button>
                 <button 
-                  onClick={() => zoomIn()} 
-                  className="p-2 md:p-3 hover:bg-white rounded-full transition-colors active:scale-95"
-                  aria-label="Acercar"
+                  onClick={() => zoomOut()} 
+                  className="p-1.5 md:p-3 hover:bg-white rounded-full transition-colors active:scale-95"
+                  aria-label="Alejar"
                 >
-                  <ZoomIn size={20} className="text-zinc-700" />
+                  <ZoomOut className="w-4 h-4 md:w-5 md:h-5 text-zinc-700" />
                 </button>
               </div>
 

@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface FlipbookProps {
@@ -172,19 +173,19 @@ export default function Flipbook({ pages, aspectRatio }: FlipbookProps) {
     translateX = "translate-x-1/4";
   }
 
-  return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden py-4 md:py-6">
-      {/* Navigation Controls */}
-      <div className="flex items-center justify-center gap-4 md:gap-6 mb-6 md:mb-8 text-zinc-600 z-10 mt-16 md:mt-0">
+  // Render controls in a portal so they stay fixed on the screen, escaping zoom transforms
+  const navControls = typeof document !== 'undefined' ? createPortal(
+    <div className="fixed bottom-4 md:bottom-8 left-0 w-full flex flex-col items-center justify-center gap-2 md:gap-4 z-50 pointer-events-none">
+      <div className="flex items-center justify-center gap-2 md:gap-6 text-zinc-600 pointer-events-auto">
         <button 
           onClick={prev} 
           disabled={currentSheet === 0} 
-          className="p-3 md:p-4 rounded-full hover:bg-zinc-200/50 disabled:opacity-30 transition-all bg-white/80 shadow-sm backdrop-blur-sm active:scale-95 border border-zinc-200"
+          className="p-2 md:p-4 rounded-full hover:bg-zinc-200/50 disabled:opacity-30 transition-all bg-white/80 shadow-sm backdrop-blur-sm active:scale-95 border border-zinc-200"
           aria-label="Página anterior"
         >
-          <ChevronLeft size={24} className="md:w-5 md:h-5" />
+          <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
         </button>
-        <span className="font-sans text-[10px] md:text-xs tracking-widest uppercase bg-white/60 px-4 py-2 rounded-full shadow-sm backdrop-blur-sm text-center min-w-[100px]">
+        <span className="font-sans text-[9px] md:text-xs tracking-widest uppercase bg-white/80 px-3 md:px-4 py-1.5 md:py-2 rounded-full shadow-sm backdrop-blur-sm text-center min-w-[80px] md:min-w-[100px] border border-zinc-200">
           {currentSheet === 0 
             ? "Portada" 
             : currentSheet === totalSheets 
@@ -194,13 +195,22 @@ export default function Flipbook({ pages, aspectRatio }: FlipbookProps) {
         <button 
           onClick={next} 
           disabled={currentSheet === totalSheets} 
-          className="p-3 md:p-4 rounded-full hover:bg-zinc-200/50 disabled:opacity-30 transition-all bg-white/80 shadow-sm backdrop-blur-sm active:scale-95 border border-zinc-200"
+          className="p-2 md:p-4 rounded-full hover:bg-zinc-200/50 disabled:opacity-30 transition-all bg-white/80 shadow-sm backdrop-blur-sm active:scale-95 border border-zinc-200"
           aria-label="Siguiente página"
         >
-          <ChevronRight size={24} className="md:w-5 md:h-5" />
+          <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
         </button>
       </div>
+      <p className="text-[8px] md:text-xs font-sans text-zinc-500 tracking-widest uppercase text-center px-3 md:px-4 bg-white/40 md:bg-white/60 py-1 md:py-1.5 rounded-full backdrop-blur-sm border border-zinc-200/50 pointer-events-auto">
+        Haz doble clic en las hojas para interactuar
+      </p>
+    </div>,
+    document.body
+  ) : null;
 
+  return (
+    <div className="relative w-full h-full flex flex-col items-center justify-center overflow-visible py-4 md:py-6">
+      {navControls}
       {/* 3D Book Container */}
       <div 
         className="w-full max-w-[100vw] sm:max-w-[95vw] lg:max-w-[90vw] 2xl:max-w-[85vw] px-1 sm:px-2 md:px-8 flex-1 flex items-center"
@@ -245,10 +255,6 @@ export default function Flipbook({ pages, aspectRatio }: FlipbookProps) {
           })}
         </div>
       </div>
-      
-      <p className="mt-8 md:mt-12 mb-24 md:mb-0 text-[9px] md:text-xs font-sans text-zinc-500 tracking-widest uppercase text-center px-4 bg-white/40 md:bg-transparent py-1.5 rounded-full backdrop-blur-sm md:backdrop-blur-none">
-        Haz doble clic en las hojas para interactuar
-      </p>
     </div>
   );
 }
